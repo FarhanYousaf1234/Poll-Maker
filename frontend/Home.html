@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Polling System</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: linear-gradient(to right, #bab3a8, #80f8fc);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+      margin-top: 0;
+    }
+
+    h3 {
+      color: #007bff;
+      margin-top: 0;
+    }
+
+    input[type='text'] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Voting System</h1>
+
+    <h3>How would you rate the difficulty level of Learning Voting system Management System</h3>
+
+    <p style="margin-bottom: 20px; font-size: 18px; color: #007bff; font-style: italic;">Your choice</p>
+    <form id="voteForm">
+      <input type="radio" id="superEasy" name="difficulty" value="superEasy">
+      <label for="superEasy" style="display: block; margin-bottom: 10px; cursor: pointer;"> A) Super Easy</label>
+    
+      <input type="radio" id="somewhatEasy" name="difficulty" value="somewhatEasy">
+      <label for="somewhatEasy" style="display: block; margin-bottom: 10px; cursor: pointer;">B) Somewhat Easy</label>
+    
+      <input type="radio" id="moderate" name="difficulty" value="moderate">
+      <label for="moderate" style="display: block; margin-bottom: 10px; cursor: pointer;">C) Moderate</label>
+    
+      <input type="radio" id="quiteDifficult" name="difficulty" value="quiteDifficult">
+      <label for="quiteDifficult" style="display: block; margin-bottom: 10px; cursor: pointer;">D) Quite
+        Difficult</label>
+    
+      <input type="radio" id="veryDifficult" name="difficulty" value="veryDifficult">
+      <label for="veryDifficult" style="display: block; margin-bottom: 20px; cursor: pointer;">E) Very Difficult</label>
+    
+      <button type="submit"
+        style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s ease;">
+        Vote
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button onclick="showRandomResults()">Show Results</button>
+    </div>
+
+    <div class="chart-container" style="width: 100%; height: 400px; overflow: hidden; margin-top: 30px;">
+      <canvas id="myChart" style="border-radius: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); background-color: #fff;" width="400" height="400"></canvas>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <button onclick="addPollField()">Add Poll</button>
+      <button onclick="addNewQuestionField()">New Question</button>
+    </div>
+
+    <div id="pollField" style="display: none;">
+      <input type="text" placeholder="Enter poll question">
+    </div>
+  
+
+    <div id="questionField" style="display: none;">
+      <input type="text" placeholder="Enter new question">
+    </div>
+   
+  </div>
+  <script>
+    function addPollField() {
+      const pollField = document.getElementById('pollField');
+      pollField.style.display = 'block';
+    }
+
+    function addNewQuestionField() {
+      const questionField = document.getElementById('questionField');
+      questionField.style.display = 'block';
+    }
+
+    function generateRandomResults() {
+      const percentages = [];
+      let remainingPercentage = 100;
+
+      for (let i = 0; i < 5; i++) {
+        if (i === 4) {
+          percentages.push(remainingPercentage);
+        } else {
+          const randomPercentage = Math.floor(Math.random() * remainingPercentage);
+          percentages.push(randomPercentage);
+          remainingPercentage -= randomPercentage;
+        }
+      }
+      return percentages;
+    }
+
+    function showRandomResults() {
+      const randomPercentages = generateRandomResults();
+
+      const ctx = document.getElementById('myChart').getContext('2d');
+      const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Super Easy', 'Somewhat Easy', 'Moderate', 'Quite Difficult', 'Very Difficult'],
+          datasets: [{
+            label: 'Random Results for Difficulty Level',
+            data: randomPercentages,
+            backgroundColor: [
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+              'rgba(153, 102, 255, 0.5)',
+              'rgba(255, 99, 132, 0.5)'
+            ],
+            borderColor: [
+              'rgba(54, 162, 235, 1)',
+              'rgba(255, 206, 86, 1)',
+              'rgba(75, 192, 192, 1)',
+              'rgba(153, 102, 255, 1)',
+              'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: false,
+          plugins: {
+            legend: {
+              display: false,
+            },
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              suggestedMax: 100
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+
+</html>
+
+

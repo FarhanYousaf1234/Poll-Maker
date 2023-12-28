@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup</title>
+  <style>
+    .signup_container {
+	width: 100%;
+	min-height: 100vh;
+	background-color: #f5f5f5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.signup_form_container {
+	width: 900px;
+	height: 500px;
+	display: flex;
+	border-radius: 10px;
+	box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%),
+		0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
+}
+
+.left {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-color: #3bb19b;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+.left h1 {
+	margin-top: 0;
+	color: white;
+	font-size: 35px;
+	align-self: center;
+}
+
+.right {
+	flex: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.form_container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.form_container h1 {
+	font-size: 40px;
+	margin-top: 0;
+}
+
+.input {
+	outline: none;
+	border: none;
+	width: 370px;
+	padding: 15px;
+	border-radius: 10px;
+	background-color: #edf5f3;
+	margin: 5px 0;
+	font-size: 14px;
+}
+
+.error_msg {
+	width: 370px;
+	padding: 15px;
+	margin: 5px 0;
+	font-size: 14px;
+	background-color: #f34646;
+	color: white;
+	border-radius: 5px;
+	text-align: center;
+}
+
+.white_btn,
+.green_btn {
+	border: none;
+	outline: none;
+	padding: 12px 0;
+	background-color: white;
+	border-radius: 20px;
+	width: 180px;
+	font-weight: bold;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.green_btn {
+	background-color: #3bb19b;
+	color: white;
+	margin: 10px;
+}
+.Radio {
+display: inline;
+
+}
+
+  </style>
+</head>
+<body>
+  <div class="signup_container">
+    <div class="signup_form_container">
+      <div class="left">
+        <h1>Welcome Back</h1>
+        <a href="/frontend/Login.html">
+          <button type="button" class="white_btn">Sign in</button>
+        </a>
+      </div>
+      <div class="right">
+        <form class="form_container" onsubmit="submitForm(event)">
+          <h1>Create Account</h1>
+          <input type="text" placeholder="First Name" name="firstName" required class="input">
+          <input type="text" placeholder="Last Name" name="lastName" required class="input">
+          <input type="email" placeholder="Email" name="email" required class="input">
+          <input type="password" placeholder="Password" name="password" required class="input">
+          <div class="error_msg" id="error"></div>
+          <button type="submit" class="green_btn">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function submitForm(event) {
+      event.preventDefault();
+  
+      const formData = {
+        firstName: document.querySelector('input[name="firstName"]').value,
+        lastName: document.querySelector('input[name="lastName"]').value,
+        email: document.querySelector('input[name="email"]').value,
+        password: document.querySelector('input[name="password"]').value
+      };
+  
+      fetch('http://localhost:1000/api/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Signup failed');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Assuming the response returns a success message
+        console.log(data.message);
+        window.location.href = '/frontend/Login.html';
+      })
+      .catch(error => {
+        // Handle errors
+        if (error.message.includes('User with given email already Exist!')) {
+          document.getElementById('error').innerText = 'User with this email already exists.';
+        } else {
+          document.getElementById('error').innerText = 'Signup failed. Please try again.';
+        }
+        console.error('Error:', error);
+      });
+    }
+  </script>
+  
+</body>
+</html>
